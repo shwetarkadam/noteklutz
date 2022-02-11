@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<head>
+
+    <title>NoteKlutz</title>
+
+    <link rel="stylesheet" href="css/index.css">
+    <!-- <link rel="stylesheet" href="custom.css"> -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body>
+
+    <!-- <a class="home" href="neat.html">↖</a> -->
+
+
+    <h1>NoteKlutz</h1>
+
+    <p>Minimal,rapid notetaking with  <em>NoteKlutz</em>, the minimalist note taking tool.</p>  
+
+
+    <h2>Pour your thoughts...</h2>
+ 
+  
+	<textarea id="message"  onchange="saveMessage()"></textarea>
+	<!--- Shows error if browser doesn't support local storage --->
+<div id="test"></div>
+<div id="message1"></div>
+  <button type="submit">submit</button>
+</body>
+<script>
+    //Save note message
+function saveMessage() {
+  if (typeof(Storage) != 'undefined') {
+    //Get value of the message
+    var messageInput = document.getElementById('message').value;
+    
+    //Save the value in local storage.
+    localStorage.setItem('message', messageInput);
+    document.getElementById('message').value = localStorage.getItem('message')
+    
+    
+  } else { 
+    //Throw an error if browser doesn't support local storage
+    document.getElementById('test').innerHTML('Sorry, your browser does not support Web Storage...')
+  }
+}
+//Get the value of the message from local storage
+document.getElementById('message1').value = localStorage.getItem('message')
+</script>
+</html>
