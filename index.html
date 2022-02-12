@@ -11,43 +11,229 @@
 
 </head>
 
-<body>
-
-    <!-- <a class="home" href="neat.html">↖</a> -->
-
-
-    <h1>NoteKlutz</h1>
-
-    <p>Minimal,rapid notetaking with  <em>NoteKlutz</em>, the minimalist note taking tool.</p>  
-
-
-    <h2>Pour your thoughts...</h2>
- 
+<body onkeydown="checkKey(event)">
+    <p id="toolbox" align="right"style="justify-content:space-evenly">
+                  
+        <span class="goleft" onclick="textLoad(currentFileNumber - 1)">&lt;</span>
+        <span id="fileId">File 1</span>
+        <span class="goright" onclick="textLoad(currentFileNumber + 1)">&gt;</span>
   
-	<textarea id="message"  onchange="saveMessage()"></textarea>
-	<!--- Shows error if browser doesn't support local storage --->
-<div id="test"></div>
-<div id="message1"></div>
-  <button type="submit">submit</button>
+    </p>
+    <h1>NoteKlutz</h1>
+    
+    <p>Minimal,rapid notetaking with <em>NoteKlutz</em>, the minimalist note taking tool.</p>
+  
+    <h3>Pour your thoughts...</h3>
+     
+    <textarea id="note" onchange="textSave()"></textarea>
+    <br />
+    <!-- <button onclick="newPage()">New </button> -->
+    <!-- <button type="submit" onclick="textSave()">Save</button>
+
+    <br /> -->
+    <br />
+    <!--- Shows error if browser doesn't support local storage --->
+    <div id="test"></div>
+    <div class="container my-3">
+
+        <!-- <h3>Your Notes</h3> -->
+        <button onclick="showNotes()">Fetch All</button>
+        <button align="right" onclick="clearScreen()">Clear</button>
+        <br/><br/>
+        <div id="notes" class="row container-fluid" style="display:flex;justify-content:space-between">
+        </div>
+    </div>
+    </div>
+    <br />
+    <button onclick="clearAllData()">Delete All Notes</button>
 </body>
 <script>
+    function main() {
+        let currentFileNumber = 1
+        textLoad(currentFileNumber);
+    }
+
+    main()
+
+    function textCopy() {
+        console.log("Insdie copy")
+        typebox = document.getElementById("note");
+        typebox.select();
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges()
+        setTimeout(function () {
+            typebox.focus();
+        }, 200);
+    }
+    function clearScreen(){
+        let notesErr = document.getElementById("notes");
+            notesErr.innerHTML = "";
+    }
+    function textSave() {
+        // Grab the text from the typebox text box and save it to local storage
+        typebox = document.getElementById("note");
+        let fullText = typebox.value;
+        localStorage.setItem("file-" + currentFileNumber, fullText);
+        console.log("saved in file: " + currentFileNumber+" FUll content :"+fullText);
+    }
+
+    function textLoad(fileNumber) {
+
+        if (fileNumber < 0) {
+            fileNumber = 0;
+        }
+        if (fileNumber > 25) {
+            fileNumber = 25;
+        }
+        currentFileNumber = fileNumber;
+        // Load the file from storage
+        storageKey = "file-" + fileNumber;
+        typebox = document.getElementById('note');
+        typebox.value = localStorage.getItem(storageKey) == null ? "" : localStorage.getItem(storageKey);
+        // Update the file number indicator
+        document.getElementById('fileId').innerHTML = "File " + fileNumber;
+    }
+
+    function clearAllData() {
+        var confirmDelete=confirm("Are you sure you want to delete all the existing data?")
+        if(confirmDelete)
+        localStorage.clear();
+        
+    }
+    function getAllNotes() {
+        //  var notes = JSON.parse(localStorage.getItem("note") || "[]" );
+        let html = "";
+        var notesobj = [];
+
+        for (i = 0; i < 25; i++) {
+            storageKey = "file-" + i;
+            //notes.push (localStorage.getItem(storageKey));
+            if (localStorage.getItem(storageKey) != null)
+                html += `<div class="noteCard my-2 mx-2 card" 
+            style="width: 18rem;border:1px solid black;padding-left:10px">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Note ${i + 1}
+                    </h5>
+                    <p class="card-text"> 
+                        ${localStorage.getItem(storageKey)}
+                    </p>
+   
+            </div>
+        </div>`;
+
+            let notesErr = document.getElementById("notes");
+            notesErr.innerHTML = html;
+            // else
+            //     notesElm.innerHTML = `Nothing to show! 
+            //     Use "Add a Note" section above to add notes.`;
+        }
+
+    }
+    function newPage() {
+        document.getElementById('note').value = "";
+    }
+
+    function checkKey(e) {
+        console.log(e.keyCode);
+        // If it$'s not a control key save the document
+        if (!e.ctrlKey) {
+
+            console.log("saving");
+            textSave();
+        } else {
+            // If the other key was between 0 and 9 (key codes 48 to 57)
+            if (e.keyCode >= 48 && e.keyCode <= 57) {
+                console.log("switching");
+                // The 0 key starts at 48, subtract that to get the key number
+                fileNumber = e.keyCode - 48;
+                // Load the text for this file number from local storage
+                textLoad(fileNumber);
+                // Output some debug code
+                console.log("File " + fileNumber);
+            }
+            console.log("ignoring");
+        }
+    }
+
+    // Function to show elements from localStorage
+    function showNotes() {
+        const notes = getAllNotes();
+
+        // if (notes == null) notesObj = [];
+        // else notesObj = notes
+
+        // let html = "";
+
+        // notesObj.forEach(function(element, index) {
+        //     html += `<div class="noteCard my-2 mx-2 card" 
+        //         style="width: 18rem;">
+        //             <div class="card-body">
+        //                 <h5 class="card-title">
+        //                     Note ${index + 1}
+        //                 </h5>
+        //                 <p class="card-text"> 
+        //                     ${element}
+        //                 </p>
+
+        //               <button id="${index}" onclick=
+        //                 "deleteNote(this.id)"
+        //                 class="btn btn-primary">
+        //                 Delete Note
+        //             </button>
+        //         </div>
+        //     </div>`;
+        // });
+
+        // let notesElm = document.getElementById("notes");
+
+        // if (notesObj.length != 0) notesElm.innerHTML = html;
+        // else
+        //     notesElm.innerHTML = `Nothing to show! 
+        //     Use "Add a Note" section above to add notes.`;
+    }
+
     //Save note message
-function saveMessage() {
-  if (typeof(Storage) != 'undefined') {
-    //Get value of the message
-    var messageInput = document.getElementById('message').value;
-    
-    //Save the value in local storage.
-    localStorage.setItem('message', messageInput);
-    document.getElementById('message').value = localStorage.getItem('message')
-    
-    
-  } else { 
-    //Throw an error if browser doesn't support local storage
-    document.getElementById('test').innerHTML('Sorry, your browser does not support Web Storage...')
-  }
-}
-//Get the value of the message from local storage
-document.getElementById('message1').value = localStorage.getItem('message')
+    // function saveNote() {
+    //     if (typeof (Storage) != 'undefined') {
+
+    //         const notes = getAllNotes();
+    //         var noteToSave = document.getElementById('note').value;
+    //         const existing = notes.find(note => note.id == noteToSave.id);
+    //         console.log("note id" + notes[0].id);
+    //         console.log(noteToSave.id)
+    //         // Edit/Update
+    //         if (existing) {
+    //             //existing.title = noteToSave.title;
+    //             existing.body = noteToSave.body;
+    //             existing.updated = new Date().toISOString();
+    //         } else {
+    //             noteToSave.id = Math.floor(Math.random() * 1000000);
+    //             console.log("oteTosave.id=" + noteToSave.id)
+    //             noteToSave.updated = new Date().toISOString();
+    //             notes.push(noteToSave);
+    //         }
+
+    //         localStorage.setItem("note", JSON.stringify(notes));
+    //         //   var messageInput = document.getElementById('note').value;
+
+    //         //Save the value in local storage.
+    //         //  localStorage.setItem('note', messageInput);
+    //         document.getElementById('note').value = JSON.parse(localStorage.getItem('note'))
+    //         console.log("SaveNote==" + note.value)
+
+    //     } else {
+    //         //Throw an error if browser doesn't support local storage
+    //         document.getElementById('test').innerHTML('Sorry, your browser does not support Web Storage...')
+    //     }
+    //     document.getElementById('note').value = localStorage.getItem('note')
+
+    // }
+    //Get the value of the message from local storage
+  //  document.getElementById('note').value = localStorage.getItem('note')
+    console.log(note.value)
+//to do logic to save data in db
 </script>
+<!-- <script src="/js/main.js" type="module"></script -->
+
 </html>
