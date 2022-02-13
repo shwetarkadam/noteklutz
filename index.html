@@ -15,19 +15,23 @@
     <h1>NoteKlutz</h1>
 
     <div style="float:left">Minimal,rapid notetaking with <em>NoteKlutz</em>, the minimalist note taking tool.</div>
-    <p id="toolbox" align="right" style="justify-content:space-evenly">
+    <p id="toolbox" align="right" >
 
         <span class="goleft" onclick="textLoad(currentFileNumber - 1)">&lt;</span>
         <span id="fileId">File 1</span>
         <span class="goright" onclick="textLoad(currentFileNumber + 1)">&gt;</span>
 
     </p>
+<div style="display:flex">
+     <textarea id="note" onchange="textSave()"></textarea>
+    <div  id="preview" onchange="textLoad()" style="float:right;margin-left: 20px;"></div>
+    </div>
 
-    <textarea id="note" onchange="textSave()"></textarea>
     <br />
+    
     <div id="test"></div>
     <div class="container my-3">
-
+<button onclick="hidepreview()">Show/Hide Preview </button>
         <button onclick="showNotes()">Fetch All</button>
         <button align="right" onclick="clearScreen()">Clear</button>
         <button class="delete" align="right" onclick="clearAllData()">Delete All Notes</button>
@@ -40,6 +44,22 @@
 
 </body>
 <script>
+    function hidepreview() {
+      var x = document.getElementById("preview");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        var element=document.getElementById("note")
+        element.style.width="50%"
+      } else {
+        x.style.display = "none";
+        var element=document.getElementById("note")
+        element.style.width="95%"
+      }
+    }
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js"></script>
+<script>
+    
     function main() {
         let currentFileNumber = 1
         textLoad(currentFileNumber);
@@ -67,6 +87,12 @@
         let fullText = typebox.value;
         localStorage.setItem("file-" + currentFileNumber, fullText);
         console.log("saved in file: " + currentFileNumber + " FUll content :" + fullText);
+     //   var showdown = require('showdown');
+        var converter = new showdown.Converter(),
+    text      = '# hello, markdown!',
+    html      = converter.makeHtml(fullText);
+    console.log(html);
+    document.getElementById("preview").innerHTML=html;
     }
 
     function textLoad(fileNumber) {
@@ -84,6 +110,11 @@
         typebox.value = localStorage.getItem(storageKey) == null ? "" : localStorage.getItem(storageKey);
         // Update the file number indicator
         document.getElementById('fileId').innerHTML = "File " + fileNumber;
+        var converter = new showdown.Converter(),
+    text      = '# hello, markdown!',
+    html      = converter.makeHtml(typebox.value);
+    console.log(html);
+    document.getElementById("preview").innerHTML=html;
     }
 
     function clearAllData() {
