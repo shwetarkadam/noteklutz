@@ -5,47 +5,39 @@
     <title>NoteKlutz</title>
 
     <link rel="stylesheet" href="css/index.css">
-    <!-- <link rel="stylesheet" href="custom.css"> -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <link rel="icon" type="image/png" href="img/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
 <body onkeydown="checkKey(event)">
-    <p id="toolbox" align="right"style="justify-content:space-evenly">
-                  
+
+    <h1>NoteKlutz</h1>
+
+    <div style="float:left">Minimal,rapid notetaking with <em>NoteKlutz</em>, the minimalist note taking tool.</div>
+    <p id="toolbox" align="right" style="justify-content:space-evenly">
+
         <span class="goleft" onclick="textLoad(currentFileNumber - 1)">&lt;</span>
         <span id="fileId">File 1</span>
         <span class="goright" onclick="textLoad(currentFileNumber + 1)">&gt;</span>
-  
+
     </p>
-    <h1>NoteKlutz</h1>
-    
-    <p>Minimal,rapid notetaking with <em>NoteKlutz</em>, the minimalist note taking tool.</p>
-  
-    <h3>Pour your thoughts...</h3>
-     
+
     <textarea id="note" onchange="textSave()"></textarea>
     <br />
-    <!-- <button onclick="newPage()">New </button> -->
-    <!-- <button type="submit" onclick="textSave()">Save</button>
-
-    <br /> -->
-    <br />
-    <!--- Shows error if browser doesn't support local storage --->
     <div id="test"></div>
     <div class="container my-3">
 
-        <!-- <h3>Your Notes</h3> -->
         <button onclick="showNotes()">Fetch All</button>
         <button align="right" onclick="clearScreen()">Clear</button>
-        <br/><br/>
+        <button class="delete" align="right" onclick="clearAllData()">Delete All Notes</button>
+        <br /><br />
         <div id="notes" class="row container-fluid" style="display:flex;justify-content:space-between">
         </div>
     </div>
     </div>
     <br />
-    <button onclick="clearAllData()">Delete All Notes</button>
+
 </body>
 <script>
     function main() {
@@ -65,16 +57,16 @@
             typebox.focus();
         }, 200);
     }
-    function clearScreen(){
+    function clearScreen() {
         let notesErr = document.getElementById("notes");
-            notesErr.innerHTML = "";
+        notesErr.innerHTML = "";
     }
     function textSave() {
         // Grab the text from the typebox text box and save it to local storage
         typebox = document.getElementById("note");
         let fullText = typebox.value;
         localStorage.setItem("file-" + currentFileNumber, fullText);
-        console.log("saved in file: " + currentFileNumber+" FUll content :"+fullText);
+        console.log("saved in file: " + currentFileNumber + " FUll content :" + fullText);
     }
 
     function textLoad(fileNumber) {
@@ -95,10 +87,10 @@
     }
 
     function clearAllData() {
-        var confirmDelete=confirm("Are you sure you want to delete all the existing data?")
-        if(confirmDelete)
-        localStorage.clear();
-        
+        var confirmDelete = confirm("Are you sure you want to delete all the existing data?")
+        if (confirmDelete)
+            localStorage.clear();
+
     }
     function getAllNotes() {
         //  var notes = JSON.parse(localStorage.getItem("note") || "[]" );
@@ -230,7 +222,7 @@
 
     // }
     //Get the value of the message from local storage
-  //  document.getElementById('note').value = localStorage.getItem('note')
+    //  document.getElementById('note').value = localStorage.getItem('note')
     console.log(note.value)
 //to do logic to save data in db
 </script>

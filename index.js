@@ -11,6 +11,7 @@ app.get('/', (req, res) => {        //get requests to the root ("/") will route 
 app.use(express.static('/css'));  
 app.use('/css',express.static('css'));
 app.use('/js',express.static('js'));
+app.use('/img',express.static('img'));
 
 app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}
     console.log(`Now listening on port ${port}`); 
