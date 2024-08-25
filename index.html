@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="icon" type="image/png" href="img/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <!-- jspdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body onkeydown="checkKey(event)">
@@ -34,6 +35,7 @@
 <button onclick="hidepreview()">Show/Hide Preview </button>
         <button onclick="showNotes()">Fetch All</button>
         <button align="right" onclick="clearScreen()">Clear</button>
+        <button align="right" onclick="downloadPdfOfCurrentNote()">Download PDF of curent open note </button>
         <button class="delete" align="right" onclick="clearAllData()">Delete All Notes</button>
         <br /><br />
         <div id="notes" class="row container-fluid" style="display:flex;justify-content:space-between">
@@ -153,6 +155,27 @@
         }
 
     }
+
+    function downloadPdfOfCurrentNote() {
+            console.log("Inside download pdf:");
+
+            // Get the content from the textarea
+            const noteContent = document.getElementById("note").value; // Get the text content, not the element
+            console.log(noteContent);
+
+            // Access jsPDF directly from the window object
+            const { jsPDF } = window.jspdf;
+
+            // Create a new jsPDF instance
+            const doc = new jsPDF();
+
+            // Add the note content to the PDF, adjusting text position as needed
+            doc.text(noteContent, 10, 10);
+
+            // Trigger the download of the PDF
+            doc.save("note.pdf");
+        }
+    
     function newPage() {
         document.getElementById('note').value = "";
     }
