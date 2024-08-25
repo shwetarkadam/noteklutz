@@ -156,12 +156,15 @@
 
     }
 
-    function downloadPdfOfCurrentNote() {
+  function downloadPdfOfCurrentNote() {
             console.log("Inside download pdf:");
 
             // Get the content from the textarea
             const noteContent = document.getElementById("note").value; // Get the text content, not the element
             console.log(noteContent);
+
+                // Parse the markdown content to plain text
+              const parsedContent = stripMarkdown(noteContent);
 
             // Access jsPDF directly from the window object
             const { jsPDF } = window.jspdf;
@@ -170,11 +173,29 @@
             const doc = new jsPDF();
 
             // Add the note content to the PDF, adjusting text position as needed
-            doc.text(noteContent, 10, 10);
+            doc.text(parsedContent, 10, 10);
 
             // Trigger the download of the PDF
             doc.save("note.pdf");
         }
+    
+
+         // Function to strip markdown syntax
+    function stripMarkdown(text) {
+        return text
+            .replace(/[\*\_]{1,2}([^\*\_]+)[\*\_]{1,2}/g, '$1') // Bold/Italic
+            .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Links
+            .replace(/!\[.*?\]\(.*?\)/g, '') // Images
+            .replace(/`{1,2}([^\`]*)`{1,2}/g, '$1') // Inline code
+            .replace(/^#{1,6}\s*(.*)/gm, '$1') // Headers
+            .replace(/>\s*(.*)/g, '$1') // Blockquotes
+            .replace(/^\s*\-\s*(.*)/gm, '$1') // Lists
+            .replace(/^\s*\*\s*(.*)/gm, '$1') // Lists
+            .replace(/^\s*\d+\.\s*(.*)/gm, '$1') // Numbered lists
+            .replace(/\n{2,}/g, '\n\n') // Newlines
+            .replace(/^\s*(---|\*\*\*|\_\_\_)\s*$/gm, '') // Horizontal rules
+            .replace(/---+/g, ''); // Remove any remaining horizontal rules or dashes
+    }
     
     function newPage() {
         document.getElementById('note').value = "";
